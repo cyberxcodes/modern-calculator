@@ -1,10 +1,11 @@
-name: Deploy calculator to GitHub Pages
+name: Deploy Orbit Studio to GitHub Pages
 on:
   push:
     branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
+  pages: write
 concurrency:
   group: github-pages
   cancel-in-progress: true
@@ -30,3 +31,7 @@ jobs:
           git add .
           git commit -m "Deploy calculator ${GITHUB_SHA}"
           git push --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:gh-pages
+      - name: Request a Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"
